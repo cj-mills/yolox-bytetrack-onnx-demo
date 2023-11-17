@@ -11,8 +11,6 @@ A Visual Studio project demonstrating how to perform object tracking across vide
 
 
 
-
-
 ## Example Usage:
 
 ### Example Files
