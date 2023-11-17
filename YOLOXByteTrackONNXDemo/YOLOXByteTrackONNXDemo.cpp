@@ -18,21 +18,32 @@
 
 /*
 * Example usage: YOLOXByteTrackONNXDemo.exe hagrid-sample-30k-384p-yolox_tiny.onnx pexels-rodnae-productions-10373924.mp4 hagrid-sample-30k-384p-colormap.json
+* Example usage: YOLOXByteTrackONNXDemo.exe hagrid-sample-30k-384p-yolox_tiny.onnx pexels-rodnae-productions-10373924.mp4 hagrid-sample-30k-384p-colormap.json Dml
 */
 
 const int TARGET_SIZE = 288;
-//const char* EXECUTION_PROVIDER = "CPU";
-const char* EXECUTION_PROVIDER = "Dml";
 const int MAX_STRIDE = 32;
 const float BBOX_CONF_THRESHOLD = 0.1f;
 const float IOU_THRESH = 0.45f;
 const int NUM_BBOX_Fields = 5;
 
 int main(int argc, char** argv) {
-    if (argc != 4) {
-        std::cout << "Usage: " << argv[0] << "<path_to_onnx_model> <path_to_input_video> <path_to_json_colormap>" << std::endl;
+    // Updated to expect 5 arguments now
+    if (argc < 4 || argc > 5) {
+        std::cout << "Usage: " << argv[0] << " [path_to_onnx_model] [path_to_input_video] [path_to_json_colormap] [execution_provider]" << std::endl;
+        std::cout << "execution_provider is optional, defaults to 'CPU'. Options: 'CPU', 'Dml'" << std::endl;
         return -1;
     }
+
+    // Set EXECUTION_PROVIDER based on the command line argument, default to "CPU"
+    std::string execution_provider = (argc == 5) ? argv[4] : "CPU";
+
+    // Ensure that execution_provider is either "CPU" or "Dml"
+    if (execution_provider != "CPU" && execution_provider != "Dml") {
+        std::cout << "Invalid execution provider. Must be 'CPU' or 'Dml'. Using default 'CPU'." << std::endl;
+        execution_provider = "CPU";
+    }
+
 
     // Intialize ONNX Runtime
     OnnxRuntimeHelper ort_helper;
@@ -82,13 +93,16 @@ int main(int argc, char** argv) {
     auto align_to_32 = [](int dim) { return dim - dim % MAX_STRIDE; };
     cv::Size input_dims(align_to_32(resized_dims.width), align_to_32(resized_dims.height));
     
+    // Calculate the offsets from the resized image dimensions to the input dimensions
     cv::Size offsets = (resized_dims - input_dims) / 2;
     Eigen::RowVector4f offsets_vector(offsets.width, offsets.height, 0, 0);
     cv::Rect crop_area(offsets.width, offsets.height, input_dims.width, input_dims.height);
 
+    // Generate a matrix containing grid coordinates and strides for a given height and width.
     Eigen::MatrixXi output_grids = generate_output_grids(input_dims.height, input_dims.width);
     
-    ort_helper.load_model(argv[1], EXECUTION_PROVIDER, input_dims);
+    // # Load the model and create an InferenceSession
+    ort_helper.load_model(argv[1], execution_provider.c_str(), input_dims);
     int proposal_length = class_names.size() + NUM_BBOX_Fields;
     const int output_length = output_grids.rows() * proposal_length;
     ort_helper.resize_output_data(output_length);
@@ -111,6 +125,11 @@ int main(int argc, char** argv) {
     cv::Mat input_img;
 
     auto start = std::chrono::high_resolution_clock::now();
+
+    auto start_inference = std::chrono::high_resolution_clock::now();
+    auto end_inference = std::chrono::high_resolution_clock::now();
+    double total_inference_duration = 0.0;
+
     while (true) {
         cap >> frame;
         if (frame.empty()) {
@@ -121,6 +140,9 @@ int main(int argc, char** argv) {
         cv::resize(frame, resized_img, resized_dims);
         input_img = resized_img(crop_area);
         cv::cvtColor(input_img, input_img, cv::COLOR_BGR2RGB);
+
+        // Start the inference timer
+        start_inference = std::chrono::high_resolution_clock::now();
 
         // Perform inference
         ort_helper.perform_inference(input_img, output_length);
@@ -152,6 +174,10 @@ int main(int argc, char** argv) {
             bbox_list.col(1) + bbox_list.col(3); // bottom-right Y
         std::vector<int> track_ids_input(tlbr_boxes.rows(), -1);
         std::vector<int> track_ids = match_detections_with_tracks(tlbr_boxes.cast<double>(), track_ids_input, tracks);
+
+        // Stop the inference timer after 'match_detections_with_tracks' call
+        end_inference = std::chrono::high_resolution_clock::now();
+        total_inference_duration += std::chrono::duration<double>(end_inference - start_inference).count();
 
         // Annotate the current frame with bounding boxes and tracking IDs
         std::vector<Eigen::VectorXf> filtered_bbox_list;
@@ -189,9 +215,15 @@ int main(int argc, char** argv) {
     auto end = std::chrono::high_resolution_clock::now();
     // Calculating the difference in the times (in seconds)
     double duration_seconds = std::chrono::duration<double>(end - start).count();
+    
+    // Calculate the average iterations per second
+    std::cout << "Average iterations per second: " << frame_number / duration_seconds << " it/s" << std::endl;
 
-    // Calculating iterations per second
-    std::cout << "Average iterations per second: " << frame_number / duration_seconds << std::endl;
+    // Calculate the average time spent in inference per frame
+    double average_inference_time_per_frame = total_inference_duration / frame_number;
+
+    // Output the average inference time per frame
+    std::cout << "Average speed for inference and tracking per frame: " << 1/average_inference_time_per_frame << " FPS" << std::endl;
 
     cap.release();  // Release the VideoCapture
     out.release();  // Release the VideoWriter
