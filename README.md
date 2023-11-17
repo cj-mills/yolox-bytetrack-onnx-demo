@@ -5,11 +5,12 @@ A Visual Studio project demonstrating how to perform object tracking across vide
 
 ## Setup Steps:
 
-1. Run the `download-dependencies.bat` setup file.
-2. Ensure the Solution Configuration for the Visual Studio project is in `Release` mode.
-3. Restore the NuGet packages.
-4. Build the solution (`Ctrl+Shift+B`).
-5. Place test files in the folder with the executable (sample files available below).
+1. Clone the repository.
+2. Run the `download-dependencies.bat` setup file.
+3. Ensure the Solution Configuration for the Visual Studio project is in `Release` mode.
+4. Restore the NuGet packages.
+5. Build the solution (`Ctrl+Shift+B`).
+6. Place test files in the folder with the executable (sample files available below).
 
 
 
