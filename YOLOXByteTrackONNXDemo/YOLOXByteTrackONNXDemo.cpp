@@ -28,14 +28,14 @@ const float IOU_THRESH = 0.45f;
 const int NUM_BBOX_Fields = 5;
 
 int main(int argc, char** argv) {
-    // Updated to expect 5 arguments now
+    
     if (argc < 4 || argc > 5) {
         std::cout << "Usage: " << argv[0] << " [path_to_onnx_model] [path_to_input_video] [path_to_json_colormap] [execution_provider]" << std::endl;
         std::cout << "execution_provider is optional, defaults to 'CPU'. Options: 'CPU', 'Dml'" << std::endl;
         return -1;
     }
 
-    // Set EXECUTION_PROVIDER based on the command line argument, default to "CPU"
+    // Set execution_provider based on the command line argument, default to "CPU"
     std::string execution_provider = (argc == 5) ? argv[4] : "CPU";
 
     // Ensure that execution_provider is either "CPU" or "Dml"
@@ -124,8 +124,8 @@ int main(int argc, char** argv) {
     cv::Mat resized_img;
     cv::Mat input_img;
 
+    // Initialize performance timers
     auto start = std::chrono::high_resolution_clock::now();
-
     auto start_inference = std::chrono::high_resolution_clock::now();
     auto end_inference = std::chrono::high_resolution_clock::now();
     double total_inference_duration = 0.0;
