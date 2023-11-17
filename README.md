@@ -15,7 +15,7 @@ A Visual Studio project demonstrating how to perform object tracking across vide
 
 ## Example Usage:
 
-### Example Files
+### Sample Files
 
 * [pexels-rodnae-productions-10373924.mp4](https://huggingface.co/datasets/cj-mills/pexels-object-tracking-test-videos/resolve/main/pexels-rodnae-productions-10373924.mp4?download=true)
 * [hagrid-sample-30k-384p-yolox_tiny.onnx](https://huggingface.co/cj-mills/yolox-hagrid-onnx/resolve/main/yolox_tiny/hagrid-sample-30k-384p-yolox_tiny.onnx?download=true)
