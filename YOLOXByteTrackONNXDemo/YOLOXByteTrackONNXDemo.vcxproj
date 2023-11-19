@@ -120,7 +120,7 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>..\external\bytetrack-eigen-1.0.0-windows\include;..\external\opencv\build\include;..\external\eigen-3.4.0;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\external\bytetrack-eigen-2.0.0-windows\include;..\external\opencv\build\include;..\external\eigen-3.4.0;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <LanguageStandard>stdcpp17</LanguageStandard>
     </ClCompile>
     <Link>
@@ -128,12 +128,12 @@
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalDependencies>..\external\opencv\build\x64\vc16\lib\*.lib;..\external\bytetrack-eigen-1.0.0-windows\x64\lib\*.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>..\external\opencv\build\x64\vc16\lib\*.lib;..\external\bytetrack-eigen-2.0.0-windows\x64\lib\*.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <PostBuildEvent>
       <Command>xcopy ..\external\opencv\build\x64\vc16\bin\opencv_world481.dll $(SolutionDir)$(Platform)\$(Configuration)\ /c /y
 xcopy ..\external\opencv\build\x64\vc16\bin\opencv_videoio_ffmpeg481_64.dll $(SolutionDir)$(Platform)\$(Configuration)\ /c /y
-xcopy ..\external\bytetrack-eigen-1.0.0-windows\x64\bin\ByteTrackEigen.dll $(SolutionDir)$(Platform)\$(Configuration)\ /c /y</Command>
+xcopy ..\external\bytetrack-eigen-2.0.0-windows\x64\bin\ByteTrackEigen.dll $(SolutionDir)$(Platform)\$(Configuration)\ /c /y</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
