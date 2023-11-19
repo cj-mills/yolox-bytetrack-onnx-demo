@@ -17,7 +17,7 @@ PowerShell -Command "& { Invoke-WebRequest -Uri 'https://gitlab.com/libeigen/eig
 PowerShell -Command "& { Expand-Archive -LiteralPath 'external\eigen-3.4.0.zip' -DestinationPath 'external\' -Force }"
 
 REM Download and extract ByteTrack-Eigen
-PowerShell -Command "& { Invoke-WebRequest -Uri 'https://github.com/cj-mills/byte-track-eigen/releases/download/1.0.0/bytetrack-eigen-1.0.0-windows.zip' -OutFile 'external\bytetrack-eigen-1.0.0-windows.zip' }"
-PowerShell -Command "& { Expand-Archive -LiteralPath 'external\bytetrack-eigen-1.0.0-windows.zip' -DestinationPath 'external\' -Force }"
+PowerShell -Command "& { Invoke-WebRequest -Uri 'https://github.com/cj-mills/byte-track-eigen/releases/download/2.0.0/bytetrack-eigen-2.0.0-windows.zip' -OutFile 'external\bytetrack-eigen-2.0.0-windows.zip' }"
+PowerShell -Command "& { Expand-Archive -LiteralPath 'external\bytetrack-eigen-2.0.0-windows.zip' -DestinationPath 'external\' -Force }"
 
 echo Done
