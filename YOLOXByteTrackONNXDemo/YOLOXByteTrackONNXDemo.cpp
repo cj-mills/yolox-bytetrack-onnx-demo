@@ -172,8 +172,7 @@ int main(int argc, char** argv) {
             bbox_list.col(1),                    // top-left Y
             bbox_list.col(0) + bbox_list.col(2), // bottom-right X
             bbox_list.col(1) + bbox_list.col(3); // bottom-right Y
-        std::vector<int> track_ids_input(tlbr_boxes.rows(), -1);
-        std::vector<int> track_ids = match_detections_with_tracks(tlbr_boxes.cast<double>(), track_ids_input, tracks);
+        std::vector<int> track_ids = match_detections_with_tracks(tlbr_boxes.cast<double>(), tracks);
 
         // Stop the inference timer after 'match_detections_with_tracks' call
         end_inference = std::chrono::high_resolution_clock::now();
